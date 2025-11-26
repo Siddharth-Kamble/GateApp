@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "680010314774",
+    "project_id": "my-gate-a04b6",
+    "storage_bucket": "my-gate-a04b6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:680010314774:android:4475108cb8affe36267137",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACYBcqOA4PKKazjNoqIh9r7hDGh7B3IVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
