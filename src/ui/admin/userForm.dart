@@ -133,7 +133,7 @@ class _AddNewUserPageState extends State<AddNewUserPage> {
                     labelText: 'User Role',
                     border: InputBorder.none,
                   ),
-                  value: _selectedRole,
+                  initialValue: _selectedRole,
                   hint: const Text('Select a Role'),
                   items: _roles.map((String role) {
                     return DropdownMenuItem<String>(

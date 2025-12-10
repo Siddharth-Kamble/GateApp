@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "680010314774",
-    "project_id": "my-gate-a04b6",
-    "storage_bucket": "my-gate-a04b6.firebasestorage.app"
+    "project_number": "812984256624",
+    "project_id": "vmsweb-ba516",
+    "storage_bucket": "vmsweb-ba516.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:680010314774:android:4475108cb8affe36267137",
+        "mobilesdk_app_id": "1:812984256624:android:e03e5e035042694cdd0cb5",
         "android_client_info": {
-          "package_name": "com.example.flutter_application_1"
+          "package_name": "onedlfs.com"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyACYBcqOA4PKKazjNoqIh9r7hDGh7B3IVI"
+          "current_key": "AIzaSyAMGZONYqaRKPxpzBqctlaDUTa-5bGM7I0"
         }
       ],
       "services": {

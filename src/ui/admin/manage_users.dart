@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/src/ui/admin/userForm.dart'
     show AddNewUserPage;
+
 // CONNECTING IMPORT: This line links the two pages
 
 // --- Constants (Matching the theme) ---
@@ -30,7 +32,9 @@ class User {
 // ----------------------------------------------------------------
 
 class ManageUsersPage extends StatelessWidget {
-  ManageUsersPage({super.key});
+  final CollectionReference<Object?> usersCollection;
+
+  ManageUsersPage({super.key, required this.usersCollection});
 
   // Sample User List
   final List<User> users = [
@@ -81,7 +85,7 @@ class ManageUsersPage extends StatelessWidget {
       // Floating Action Button for CREATE (Add User)
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>
-            _handleCreateUser(context), // <--- THIS CALLS THE NAVIGATION
+            _handleCreateUser(context), // Pass usersCollection here
         label: const Text('Add New User'),
         icon: const Icon(Icons.person_add_alt_1),
         backgroundColor: Colors.green,
@@ -125,8 +129,10 @@ class ManageUsersPage extends StatelessWidget {
   void _handleCreateUser(BuildContext context) {
     Navigator.push(
       context,
-      // Navigates to the AddNewUserPage form
-      MaterialPageRoute(builder: (context) => const AddNewUserPage()),
+      // Pass the required usersCollection to AddNewUserPage
+      MaterialPageRoute(
+        builder: (context) => AddNewUserPage(usersCollection: usersCollection),
+      ),
     );
   }
 
@@ -169,7 +175,6 @@ class ManageUsersPage extends StatelessWidget {
         ],
       ),
       isThreeLine: true,
-
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

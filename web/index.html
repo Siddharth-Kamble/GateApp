@@ -10,9 +10,6 @@
 
     For more details:
     * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
   -->
   <base href="$FLUTTER_BASE_HREF">
 
@@ -33,6 +30,14 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+
+  <!-- IMPORTANT -->
+  <!-- This container is REQUIRED for Firebase Phone Auth on Web. -->
+  <!-- Firebase will render invisible/visible reCAPTCHA here. -->
+  <div id="recaptcha-container"></div>
+
+  <!-- Flutter bootstrap script -->
   <script src="flutter_bootstrap.js" async></script>
+
 </body>
 </html>

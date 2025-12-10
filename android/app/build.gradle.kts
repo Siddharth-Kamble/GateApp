@@ -1,53 +1,66 @@
+// android/app/build.gradle.kts
+
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    // Flutter Gradle plugin
+    id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
     id("dev.flutter.flutter-gradle-plugin")
-    // Firebase Google Services plugin
-    id("com.google.gms.google-services")  // Firebase plugin
 }
 
 android {
-    namespace = "com.example.flutter_application_1"
-    compileSdk = flutter.compileSdkVersion
+    // ✅ same as google-services.json ka package_name?
+    namespace = "onedlfs.com"
+
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
     defaultConfig {
-        applicationId = "com.example.flutter_application_1" // Firebase uses this
+        // ✅ yahi value google-services.json me "package_name" hai
+        applicationId = "onedlfs.com"
+
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+        freeCompilerArgs += "-Xjvm-default=all"
+    }
+
     buildTypes {
-        release {
+        // 🔹 DEBUG build (jo tum flutter run se chalate ho)
+        getByName("debug") {
+            // Yahi important hai: resource shrinking OFF
+            isMinifyEnabled = false
+            isShrinkResources = false
+        }
+
+        // 🔹 RELEASE build
+        getByName("release") {
+            // Abhi ke liye release me bhi shrinking band
+            isMinifyEnabled = false
+            isShrinkResources = false
+
+            // Test purpose ke liye debug ke signature se sign
             signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
 
-flutter {
-    source = "../.."
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 }
 
-dependencies {
-    // Firebase BoM (Bill of Materials)
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
-
-    // Firebase Analytics
-    implementation("com.google.firebase:firebase-analytics")
-
-    // Add other Firebase products here if needed
-    // implementation("com.google.firebase:firebase-auth")
-    // implementation("com.google.firebase:firebase-firestore")
+flutter {
+    source = "../.."
 }

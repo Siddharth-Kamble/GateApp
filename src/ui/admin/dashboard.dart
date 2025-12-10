@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/src/ui/admin/manage_users.dart'
     show ManageUsersPage;
-// Assuming the ManageUsersPage is imported correctly
 
 // --- Soft Shadow Style Constants ---
 const Color primaryBlue = Color(0xFF42A5F5);
@@ -104,6 +104,7 @@ class DashboardMetricCard extends StatelessWidget {
     );
   }
 }
+
 // ----------------------------------------------------------------
 
 class AdminDashboard extends StatelessWidget {
@@ -162,12 +163,16 @@ class AdminDashboard extends StatelessWidget {
         elevation: 0,
         centerTitle: false,
       ),
-      // CONNECTED FAB: Navigates to ManageUsersPage
+      // CONNECTED FAB: Navigates to ManageUsersPage with usersCollection
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ManageUsersPage()),
+            MaterialPageRoute(
+              builder: (context) => ManageUsersPage(
+                usersCollection: FirebaseFirestore.instance.collection('users'),
+              ),
+            ),
           );
         },
         label: const Text('Manage Users'),
@@ -183,13 +188,10 @@ class AdminDashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-
             // --- Metric Cards (Grid Layout) ---
             _buildMetricGrid(),
-
             const SizedBox(height: 40),
-
-            // --- USER LIST Section Header (Updated) ---
+            // --- USER LIST Section Header ---
             Padding(
               padding: const EdgeInsets.only(left: 4.0),
               child: Text(
@@ -201,12 +203,9 @@ class AdminDashboard extends StatelessWidget {
                 ),
               ),
             ),
-
             const SizedBox(height: 15),
-
-            // --- User List (Replaced Action List) ---
+            // --- User List ---
             _buildUserList(),
-
             const SizedBox(height: 100),
           ],
         ),
@@ -214,9 +213,7 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 
-  // Helper method for the Metric Grid (Updated to show Total Users)
   Widget _buildMetricGrid() {
-    // Calculate total users from the simulated data
     final totalUsers = _users.length;
 
     return GridView.count(
@@ -232,35 +229,33 @@ class AdminDashboard extends StatelessWidget {
           value: '42',
           icon: Icons.people_alt_outlined,
           iconColor: Colors.white,
-          cardColor: const Color(0xFF00ACC1), // Teal
+          cardColor: const Color(0xFF00ACC1),
         ),
         DashboardMetricCard(
           title: 'Total Vehicles',
           value: '19',
           icon: Icons.directions_car_filled_outlined,
           iconColor: Colors.white,
-          cardColor: primaryBlue, // Blue
+          cardColor: primaryBlue,
         ),
         DashboardMetricCard(
           title: 'Active Guards',
           value: '6',
           icon: Icons.security_outlined,
           iconColor: Colors.white,
-          cardColor: const Color(0xFFFFB300), // Amber
+          cardColor: const Color(0xFFFFB300),
         ),
-        // 4. Changed to Total Users
         DashboardMetricCard(
           title: 'Total Users',
           value: totalUsers.toString(),
           icon: Icons.group_add_outlined,
           iconColor: Colors.white,
-          cardColor: const Color(0xFF673AB7), // Deep Purple
+          cardColor: const Color(0xFF673AB7),
         ),
       ],
     );
   }
 
-  // NEW Helper method for the User List (Replaces _buildActionList)
   Widget _buildUserList() {
     return Container(
       decoration: BoxDecoration(
@@ -270,22 +265,19 @@ class AdminDashboard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          // Iterate over the simulated user list
           ..._users.map((user) {
             return Column(
               children: [
                 _buildUserTile(user),
-                // Add a divider after every tile except the last one
                 if (user != _users.last) _buildActionDivider(),
               ],
             );
-          }).toList(),
+          }),
         ],
       ),
     );
   }
 
-  // NEW Helper method to build a single User Tile
   Widget _buildUserTile(AdminUser user) {
     final statusColor = user.isActive
         ? const Color(0xFF4CAF50)
@@ -330,7 +322,6 @@ class AdminDashboard extends StatelessWidget {
         backgroundColor: statusColor,
       ),
       onTap: () {
-        // Placeholder for navigation/action (e.g., Edit User)
         print('Tapped on user: ${user.name}');
       },
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
