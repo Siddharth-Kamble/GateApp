@@ -4,11 +4,6 @@ const admin = require("firebase-admin");
 const app = express();
 app.use(express.json());
 
-// ✅ Health check route
-app.get("/", (req, res) => {
-  res.send("FCM SERVER IS RUNNING");
-});
-
 // 🔐 Firebase Admin Init (Render compatible)
 admin.initializeApp({
   credential: admin.credential.cert(
@@ -17,6 +12,11 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
+
+// ✅ Health check
+app.get("/", (req, res) => {
+  res.send("✅ FCM SERVER IS RUNNING");
+});
 
 /**
  * 🔔 Notify Owner API
