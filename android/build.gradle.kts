@@ -1,6 +1,16 @@
 import org.gradle.api.file.Directory
 import org.gradle.api.tasks.Delete
+buildscript {
 
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.google.gms:google-services:4.4.1")
+    }
+}
 allprojects {
     // KEEP EMPTY – required because FAIL_ON_PROJECT_REPOS is enabled
 }
@@ -23,14 +33,4 @@ tasks.register<Delete>("clean") {
 // -------------------------
 // Buildscript FIX
 // -------------------------
-buildscript {
 
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("com.google.gms:google-services:4.4.1")
-    }
-}

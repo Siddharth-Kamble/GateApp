@@ -4,67 +4,95 @@ const admin = require("firebase-admin");
 const app = express();
 app.use(express.json());
 
-// 🔐 Firebase Admin Init (Render compatible)
+/**
+ * 🔐 FIREBASE ADMIN INITIALIZATION
+ * (Use ONE method only – file based OR env based)
+ */
+
+// ✅ OPTION A: FILE BASED (LOCAL / SIMPLE)
+// Make sure serviceAccountKey.json exists in this folder
+const serviceAccount = require("./serviceAccountKey.json");
+
 admin.initializeApp({
-  credential: admin.credential.cert(
-    JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
-  ),
+  credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
 
-// ✅ Health check
+/**
+ * ✅ HEALTH CHECK
+ */
 app.get("/", (req, res) => {
   res.send("✅ FCM SERVER IS RUNNING");
 });
 
 /**
- * 🔔 Notify Owner API
- * Guard → Node → Owner
+ * 🔔 NOTIFY OWNER API (MULTI-OWNER)
+ * Guard → Node → ALL Owners
+ * DATA-ONLY FCM (required for background + killed)
  */
 app.post("/notify-owner", async (req, res) => {
   try {
-    const { ownerId, passId, type } = req.body;
+    const { passId, type } = req.body;
 
-    if (!ownerId || !passId || !type) {
+    if (!passId || !type) {
       return res.status(400).json({ error: "Missing parameters" });
     }
 
-    const ownerDoc = await db.collection("users").doc(ownerId).get();
-    if (!ownerDoc.exists) {
-      return res.status(404).json({ error: "Owner not found" });
+    // 🔎 Fetch ALL owners
+    const ownersSnap = await db
+      .collection("users")
+      .where("role", "==", "owner")
+      .get();
+
+    if (ownersSnap.empty) {
+      return res.status(404).json({ error: "No owners found" });
     }
 
-    const ownerData = ownerDoc.data();
-    if (ownerData.role !== "owner") {
-      return res.status(403).json({ error: "User is not an owner" });
-    }
+    const messages = [];
 
-    const token = ownerData.fcmToken;
-    if (!token) {
-      return res.status(400).json({ error: "Owner has no FCM token" });
-    }
+    ownersSnap.forEach((doc) => {
+      const data = doc.data();
 
-    await admin.messaging().send({
-      token,
-      notification: {
-        title: "New Entry Approval Required",
-        body:
-          type === "visitor"
-            ? "A visitor is waiting for approval"
-            : "A vehicle is waiting for approval",
-      },
-      data: { type, passId },
-      android: { priority: "high" },
+      if (!data.fcmToken) return;
+
+      messages.push({
+        token: data.fcmToken,
+        data: {
+          title: "New Entry Approval Required",
+          body:
+            type === "visitor"
+              ? "A visitor is waiting for approval"
+              : "A vehicle is waiting for approval",
+          type,
+          passId,
+        },
+        android: {
+          priority: "high",
+        },
+      });
     });
 
-    res.json({ success: true });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: e.message });
+    if (messages.length === 0) {
+      return res.status(400).json({ error: "No valid FCM tokens" });
+    }
+
+    // 🔔 SEND TO ALL OWNERS
+    await admin.messaging().sendEach(messages);
+
+    res.json({
+      success: true,
+      sent: messages.length,
+    });
+  } catch (error) {
+    console.error("❌ FCM ERROR:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 
+/**
+ * 🚀 START SERVER
+ */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ FCM server running on port ${PORT}`);

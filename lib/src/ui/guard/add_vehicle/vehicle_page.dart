@@ -97,13 +97,16 @@ class _RegisterVehicleState extends State<RegisterVehicle> {
 
       final guardUid = widget.loggedInGuard.uid; // Logged-in guard UID
 
+      final contactText = _contactController.text.trim();
+
       final docRef = await _firestore.collection("vehicles").add({
         "vehicleNumber": _vehicleNumberController.text.trim(),
         "ownerName": _ownerNameController.text.trim(),
-        "contact": _contactController.text.trim(),
+        "contact": contactText.isEmpty ? null : contactText,
         "vehicleType": _vehicleType,
         "createdAt": FieldValue.serverTimestamp(),
         "status": "pending",
+        "isEntered": false,
         "submittedBy": guardUid,
         "approvedBy": null,
         "approvedAt": null,
@@ -220,9 +223,13 @@ class _RegisterVehicleState extends State<RegisterVehicle> {
                       prefixIcon: Icon(Icons.phone),
                       labelText: "Contact Number",
                     ),
-                    validator: (v) => (v == null || v.trim().length != 10)
-                        ? "Enter valid 10-digit number"
-                        : null,
+                   validator: (v) {
+    if (v == null || v.trim().isEmpty) return null; // ✅ optional
+    if (int.tryParse(v.trim()) == null) {
+      return "Enter valid number";
+    }
+    return null;
+  },
                   ),
                   const SizedBox(height: 12),
 

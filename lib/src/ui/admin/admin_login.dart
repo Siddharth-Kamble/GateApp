@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/src/ui/shared/role_selection.dart' show RoleSelectionPage;
 // NOTE: Ensure this path is correct for your project structure
 import '../admin/dashboard.dart';
 
@@ -85,7 +86,28 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Top brand/header
+                  Align(
+  alignment: Alignment.centerLeft,
+  child: TextButton.icon(
+    onPressed: () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const RoleSelectionPage()),
+        (route) => false,
+      );
+    },
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    label: const Text(
+      'Back to Role Selection',
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+),
+const SizedBox(height: 12),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

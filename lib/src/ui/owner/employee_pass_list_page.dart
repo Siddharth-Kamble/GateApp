@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_application_1/src/ui/guard/employeeGatepass/employee_pass_details_page.dart' show EmployeePassDetailsPage;
 
 class EmployeePassListPage extends StatefulWidget {
   const EmployeePassListPage({super.key});
@@ -19,7 +20,12 @@ class _EmployeePassListPageState extends State<EmployeePassListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Employee Passes (Owner Panel)"),
+        title: Text(
+          "Employee Passes (Owner Panel)",
+          style: const TextStyle(
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Colors.deepOrange,
       ),
       body: Column(
@@ -115,15 +121,12 @@ class _EmployeePassListPageState extends State<EmployeePassListPage> {
                 // SEARCH
                 docs = docs.where((d) {
                   final data = d.data();
-                  final name =
-                      (data["employeeName"] ?? "").toString().toLowerCase();
-                  final empId =
-                      (data["employeeId"] ?? "").toString().toLowerCase();
+                  final name = (data["employeeName"] ?? "").toString().toLowerCase();
+                  final empId = (data["employeeId"] ?? "").toString().toLowerCase();
 
                   if (searchQuery.isEmpty) return true;
 
-                  return name.contains(searchQuery) ||
-                      empId.contains(searchQuery);
+                  return name.contains(searchQuery) || empId.contains(searchQuery);
                 }).toList();
 
                 // DATE FILTER
@@ -157,6 +160,7 @@ class _EmployeePassListPageState extends State<EmployeePassListPage> {
                       reason: reason,
                       timestamp: timestamp,
                       imageUrl: imageUrl,
+                      documentId: docs[index].id,  // Pass documentId here
                     );
                   },
                 );
@@ -181,9 +185,7 @@ class _EmployeePassListPageState extends State<EmployeePassListPage> {
       if (ts == null) return false;
 
       if (dateFilter == "Today") {
-        return ts.year == now.year &&
-            ts.month == now.month &&
-            ts.day == now.day;
+        return ts.year == now.year && ts.month == now.month && ts.day == now.day;
       }
 
       if (dateFilter == "ThisWeek") {
@@ -202,77 +204,99 @@ class _EmployeePassListPageState extends State<EmployeePassListPage> {
     required String reason,
     required DateTime? timestamp,
     required String imageUrl,
+    required String documentId,  // Accept documentId here
   }) {
     final isToday = timestamp != null &&
         timestamp.year == DateTime.now().year &&
         timestamp.month == DateTime.now().month &&
         timestamp.day == DateTime.now().day;
 
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        leading: GestureDetector(
-          onTap: () => _openImageFullScreen(context, imageUrl),
-          child: Hero(
-            tag: imageUrl.isNotEmpty ? imageUrl : "$name-$empId-$timestamp",
-            child: CircleAvatar(
-              radius: 28,
-              backgroundColor: Colors.orange.shade100,
-              backgroundImage:
-                  imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
-              child: imageUrl.isEmpty
-                  ? const Icon(Icons.photo, color: Colors.deepOrange)
-                  : null,
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => EmployeePassDetailsPage(
+              data: {
+                "employeeName": name,
+                "employeeId": empId,
+                "reason": reason,
+                "imageUrl": imageUrl,
+                "createdAt": timestamp, // ✅ DateTime
+                "status": "Approved",
+              },
+              documentId: documentId,
+              isGuard: true,  // Pass the documentId here
             ),
           ),
+        );
+      },
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
-
-        title: Row(
-          children: [
-            Expanded(
-              child: Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+        child: ListTile(
+          leading: GestureDetector(
+            onTap: () => _openImageFullScreen(context, imageUrl),
+            child: Hero(
+              tag: imageUrl.isNotEmpty ? imageUrl : "$name-$empId-$timestamp",
+              child: CircleAvatar(
+                radius: 28,
+                backgroundColor: Colors.orange.shade100,
+                backgroundImage:
+                    imageUrl.isNotEmpty ? NetworkImage(imageUrl) : null,
+                child: imageUrl.isEmpty
+                    ? const Icon(Icons.photo, color: Colors.deepOrange)
+                    : null,
               ),
             ),
-            if (isToday)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade600,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  "Today",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
+          ),
+          title: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-          ],
-        ),
-
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Employee ID: $empId"),
-            if (reason.isNotEmpty) Text("Reason: $reason"),
-            if (timestamp != null)
-              Text(
-                "Date: ${timestamp.toString().substring(0, 16)}",
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Colors.black54,
+              if (isToday)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade600,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    "Today",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("Employee ID: $empId"),
+              if (reason.isNotEmpty) Text("Reason: $reason"),
+              if (timestamp != null)
+                Text(
+                  "Date: ${timestamp.toString().substring(0, 16)}",
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black54,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

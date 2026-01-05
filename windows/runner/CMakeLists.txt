@@ -1,3 +1,4 @@
+set(CMAKE_GENERATOR_TOOLSET "v142")
 cmake_minimum_required(VERSION 3.14)
 project(runner LANGUAGES CXX)
 

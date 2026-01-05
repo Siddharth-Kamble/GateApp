@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.10.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -14,52 +14,57 @@ dependencies:
   cupertino_icons: ^1.0.8
   provider: ^6.1.5
   http: ^1.2.0
-  mobile_scanner: ^3.5.7
   flutter_svg: ^2.1.3
   shared_preferences: ^2.2.2
   google_fonts: ^6.2.1
+  intl: ^0.19.0
 
-  # Firebase Packages
-  firebase_core: ^3.15.2
-  firebase_auth: ^5.7.0
-  cloud_firestore: ^5.5.0
-  firebase_messaging: ^15.0.3
-  firebase_storage: ^12.4.10
-
-  # Notifications & Utilities
-  flutter_local_notifications: ^17.2.3
-  timezone: ^0.9.1
+  # Scanner & Media
+  mobile_scanner: ^3.5.7
   image_picker: ^1.2.1
   flutter_image_compress: ^2.4.0
-  path_provider: ^2.1.4  # updated
+  flutter_ringtone_player: ^4.0.0
 
-  # File Exporting
+  # Storage & Files
+  path_provider: ^2.1.4
+  permission_handler: ^11.4.0
+  file_selector: ^1.0.3
+
+  # File Export / Share
   share_plus: ^7.2.0
   pdf: ^3.10.4
   printing: ^5.11.0
   excel: ^2.0.4
-  open_filex: ^4.0.4  # updated
+  open_filex: ^4.0.4
+  archive: ^3.5.1 
+  image: ^4.1.7  # ✅ REQUIRED for ZIP export
 
-  permission_handler: ^11.4.0
+  # Notifications
+  flutter_local_notifications: ^17.2.3
+  timezone: ^0.9.1
 
-  intl: ^0.18.1
-
-  flutter_ringtone_player: ^4.0.0
+  # Firebase
+  firebase_core: ^3.15.2
+  firebase_auth: ^5.7.0
+  cloud_firestore: ^5.6.12
+  firebase_messaging: ^15.2.10
+  firebase_storage: ^12.4.10
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "lib/src/assets/app_Icon.jpeg"
 
 flutter:
   uses-material-design: true
-
   assets:
     - lib/src/assets/odlfs.jpg
     - lib/src/assets/guardlogo.jpg
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "lib/src/assets/app_icon.jpg"
+    - lib/src/assets/app_Icon.jpeg
+    - lib/src/assets/jcb.jpg

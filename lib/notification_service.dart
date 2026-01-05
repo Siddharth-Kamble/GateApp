@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tzdata;
@@ -9,54 +8,43 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
 
+  static const String _channelId = 'high_importance_channel';
+
   Future<void> init() async {
     if (_initialized) return;
 
-    // Initialize timezone database
     tzdata.initializeTimeZones();
 
-    // Android initialization
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // iOS initialization
-    final iosInit = DarwinInitializationSettings(
-      requestSoundPermission: true,
-      requestBadgePermission: true,
+    const iosInit = DarwinInitializationSettings(
       requestAlertPermission: true,
-      onDidReceiveLocalNotification: (id, title, body, payload) async {
-        debugPrint('iOS Foreground Notification: $title - $body');
-      },
+      requestBadgePermission: true,
+      requestSoundPermission: true,
     );
 
-    final initSettings =
+    const settings =
         InitializationSettings(android: androidInit, iOS: iosInit);
 
-    await flutterLocalNotificationsPlugin.initialize(
-      initSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        if (response.payload != null) {
-          debugPrint('Notification tapped with payload: ${response.payload}');
-        }
-      },
+    await _plugin.initialize(settings);
+
+    const channel = AndroidNotificationChannel(
+      _channelId,
+      'High Importance Notifications',
+      description: 'Used for approval alerts',
+      importance: Importance.max,
+      playSound: true,
     );
 
-    // Android notification channel
-    const androidChannel = AndroidNotificationChannel(
-      'default_channel_id',
-      'Default Notifications',
-      description: 'General notifications',
-      importance: Importance.high,
-    );
-
-    await flutterLocalNotificationsPlugin
+    await _plugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(androidChannel);
+        ?.createNotificationChannel(channel);
 
     _initialized = true;
   }
@@ -68,49 +56,20 @@ class NotificationService {
     Map<String, dynamic>? payload,
   }) async {
     final androidDetails = AndroidNotificationDetails(
-      'default_channel_id',
-      'Default Notifications',
-      channelDescription: 'General notifications',
-      importance: Importance.high,
+      _channelId,
+      'High Importance Notifications',
+      channelDescription: 'Used for approval alerts',
+      importance: Importance.max,
       priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
     );
 
-    final iosDetails = DarwinNotificationDetails();
-
-    await flutterLocalNotificationsPlugin.show(
+    await _plugin.show(
       id,
       title,
       body,
-      NotificationDetails(android: androidDetails, iOS: iosDetails),
-      payload: payload != null ? jsonEncode(payload) : null,
-    );
-  }
-
-  Future<void> scheduleNotification({
-    required int id,
-    required String title,
-    required String body,
-    required DateTime scheduledDate,
-    Map<String, dynamic>? payload,
-  }) async {
-    final tzDate = tz.TZDateTime.from(scheduledDate, tz.local);
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tzDate,
-      NotificationDetails(
-        android: AndroidNotificationDetails(
-          'default_channel_id',
-          'Default Notifications',
-          channelDescription: 'General notifications',
-        ),
-        iOS: DarwinNotificationDetails(),
-      ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+      NotificationDetails(android: androidDetails),
       payload: payload != null ? jsonEncode(payload) : null,
     );
   }

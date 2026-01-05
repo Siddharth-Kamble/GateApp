@@ -213,16 +213,40 @@ class _ActivityCard extends StatelessWidget {
                 title: Text('$type: $name'),
                 subtitle: Text('Status: $status'),
                 trailing: isApproved
-                    ? ElevatedButton(
-                        onPressed: () {
-                          firebaseFirestore
-                              .collection('passes')
-                              .doc(docs[index].id)
-                              .update({'isEntered': true});
-                        },
-                        child: const Text('Allow Entry'),
-                      )
-                    : null,
+    ? Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Allow Entry (visitor & vehicle)
+          if (data['isEntered'] != true)
+            ElevatedButton(
+              onPressed: () {
+                firebaseFirestore
+                    .collection('passes')
+                    .doc(docs[index].id)
+                    .update({'isEntered': true});
+              },
+              child: const Text('Allow Entry'),
+            ),
+
+          // spacing between buttons
+          if (data['isEntered'] == true && data['isExited'] != true)
+            const SizedBox(width: 8),
+
+          // Allow Exit (visitor & vehicle)
+          if (data['isEntered'] == true && data['isExited'] != true)
+            ElevatedButton(
+              onPressed: () {
+                firebaseFirestore
+                    .collection('passes')
+                    .doc(docs[index].id)
+                    .update({'isExited': true});
+              },
+              child: const Text('Allow Exit'),
+            ),
+        ],
+      )
+    : null,
+
               ),
             );
           },

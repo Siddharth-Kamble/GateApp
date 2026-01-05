@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart'
     show QuerySnapshot, FirebaseFirestore, CollectionReference;
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/src/ui/shared/role_selection.dart' show RoleSelectionPage;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_application_1/src/models/user_model.dart';
@@ -174,7 +175,28 @@ class _GuardLoginPageState extends State<GuardLoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // --------- small heading above card ----------
+                  Align(
+  alignment: Alignment.centerLeft,
+  child: TextButton.icon(
+    onPressed: () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const RoleSelectionPage()),
+        (route) => false,
+      );
+    },
+    icon: const Icon(Icons.arrow_back, color: Colors.white),
+    label: const Text(
+      'Back to Role Selection',
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
+),
+const SizedBox(height: 12),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [

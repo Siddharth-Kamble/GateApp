@@ -4,16 +4,7 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
-/// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
+
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -41,48 +32,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCAQOz20HZylFd_8IfqWq359G8pZVYMloU',
-    appId: '1:680010314774:web:0c9b0ab6e21e2027267137',
-    messagingSenderId: '680010314774',
-    projectId: 'my-gate-a04b6',
-    authDomain: 'my-gate-a04b6.firebaseapp.com',
-    storageBucket: 'my-gate-a04b6.firebasestorage.app',
-    measurementId: 'G-P920KZB1MK',
+    apiKey: 'AIzaSyDTSMiQCLmiqwsFPSjFAE4dPOB0jrqcJYo',
+    appId: '1:812984256624:web:434bf28b6aeeb55ddd0cb5',
+    messagingSenderId: '812984256624',
+    projectId: 'vmsweb-ba516',
+    authDomain: 'vmsweb-ba516.firebaseapp.com',
+    storageBucket: 'vmsweb-ba516.firebasestorage.app',
+    measurementId: 'G-93EGNPW0X6',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyACYBcqOA4PKKazjNoqIh9r7hDGh7B3IVI',
-    appId: '1:680010314774:android:4475108cb8affe36267137',
-    messagingSenderId: '680010314774',
-    projectId: 'my-gate-a04b6',
-    storageBucket: 'my-gate-a04b6.firebasestorage.app',
+    apiKey: 'AIzaSyAMGZONYqaRKPxpzBqctlaDUTa-5bGM7I0',
+    appId: '1:812984256624:android:e03e5e035042694cdd0cb5',
+    messagingSenderId: '812984256624',
+    projectId: 'vmsweb-ba516',
+    storageBucket: 'vmsweb-ba516.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDUl-zmTgte0otyWZN1AJX5Y5Evc9wseiM',
-    appId: '1:680010314774:ios:67c855734c4f033d267137',
-    messagingSenderId: '680010314774',
-    projectId: 'my-gate-a04b6',
-    storageBucket: 'my-gate-a04b6.firebasestorage.app',
+    apiKey: 'AIzaSyBXOiibYsEoUXnOQKHHMIxiyiyJaBT4nps',
+    appId: '1:812984256624:ios:7df729627ad2b3bbdd0cb5',
+    messagingSenderId: '812984256624',
+    projectId: 'vmsweb-ba516',
+    storageBucket: 'vmsweb-ba516.firebasestorage.app',
     iosBundleId: 'com.example.flutterApplication1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDUl-zmTgte0otyWZN1AJX5Y5Evc9wseiM',
-    appId: '1:680010314774:ios:67c855734c4f033d267137',
-    messagingSenderId: '680010314774',
-    projectId: 'my-gate-a04b6',
-    storageBucket: 'my-gate-a04b6.firebasestorage.app',
+    apiKey: 'AIzaSyBXOiibYsEoUXnOQKHHMIxiyiyJaBT4nps',
+    appId: '1:812984256624:ios:7df729627ad2b3bbdd0cb5',
+    messagingSenderId: '812984256624',
+    projectId: 'vmsweb-ba516',
+    storageBucket: 'vmsweb-ba516.firebasestorage.app',
     iosBundleId: 'com.example.flutterApplication1',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCAQOz20HZylFd_8IfqWq359G8pZVYMloU',
-    appId: '1:680010314774:web:ebc277043d4cb852267137',
-    messagingSenderId: '680010314774',
-    projectId: 'my-gate-a04b6',
-    authDomain: 'my-gate-a04b6.firebaseapp.com',
-    storageBucket: 'my-gate-a04b6.firebasestorage.app',
-    measurementId: 'G-G6ZDQE5Z7N',
+    apiKey: 'AIzaSyDTSMiQCLmiqwsFPSjFAE4dPOB0jrqcJYo',
+    appId: '1:812984256624:web:c9f3ccca6defe2dedd0cb5',
+    messagingSenderId: '812984256624',
+    projectId: 'vmsweb-ba516',
+    authDomain: 'vmsweb-ba516.firebaseapp.com',
+    storageBucket: 'vmsweb-ba516.firebasestorage.app',
+    measurementId: 'G-JVW51TCRCQ',
   );
 }

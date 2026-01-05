@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application_1/src/models/user_model.dart';
-import 'package:flutter_application_1/src/ui/owner/owner_dashboard.dart' show OwnerDashboard;
+import 'package:flutter_application_1/src/ui/owner/owner_dashboard.dart'
+    show OwnerDashboard;
 import 'package:flutter_application_1/src/services/fcm_service.dart';
+import 'package:flutter_application_1/src/ui/shared/role_selection.dart'
+    show RoleSelectionPage;
 import 'package:shared_preferences/shared_preferences.dart';
 
 // --- Custom Colors ---
@@ -27,8 +30,8 @@ class _OwnerLoginPageState extends State<OwnerLoginPage> {
   bool _obscurePassword = true;
   bool _checkingExistingLogin = true; // ✅ NEW: to show loader while checking
 
-  final CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection('users');
+  final CollectionReference usersCollection = FirebaseFirestore.instance
+      .collection('users');
 
   @override
   void initState() {
@@ -188,7 +191,30 @@ class _OwnerLoginPageState extends State<OwnerLoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // --- Logo ---
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const RoleSelectionPage(),
+                            ),
+                            (route) => false,
+                          );
+                        },
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        label: const Text(
+                          'Back to Role Selection',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -263,34 +289,37 @@ class _OwnerLoginPageState extends State<OwnerLoginPage> {
                                 labelText: "Username",
                                 icon: Icons.person_outline,
                               ),
-                              validator: (v) =>
-                                  v == null || v.isEmpty ? "Username required" : null,
+                              validator: (v) => v == null || v.isEmpty
+                                  ? "Username required"
+                                  : null,
                             ),
                             const SizedBox(height: 18),
 
                             TextFormField(
                               controller: _passwordController,
-                              decoration: _inputDecoration(
-                                labelText: "Password",
-                                icon: Icons.lock_outline,
-                              ).copyWith(
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    _obscurePassword
-                                        ? Icons.visibility_off_outlined
-                                        : Icons.visibility_outlined,
-                                    color: Colors.grey.shade500,
+                              decoration:
+                                  _inputDecoration(
+                                    labelText: "Password",
+                                    icon: Icons.lock_outline,
+                                  ).copyWith(
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        _obscurePassword
+                                            ? Icons.visibility_off_outlined
+                                            : Icons.visibility_outlined,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _obscurePassword = !_obscurePassword;
+                                        });
+                                      },
+                                    ),
                                   ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscurePassword = !_obscurePassword;
-                                    });
-                                  },
-                                ),
-                              ),
                               obscureText: _obscurePassword,
-                              validator: (v) =>
-                                  v == null || v.isEmpty ? "Password required" : null,
+                              validator: (v) => v == null || v.isEmpty
+                                  ? "Password required"
+                                  : null,
                             ),
                             const SizedBox(height: 8),
                             const Align(
@@ -324,8 +353,9 @@ class _OwnerLoginPageState extends State<OwnerLoginPage> {
                                           vertical: 16,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         elevation: 6,
                                       ),
